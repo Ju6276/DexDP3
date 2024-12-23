@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- For Collection -->
+    <!-- launch OptiTrack for tracking the end-effector pose -->
+    <include file="$(find natnet_ros_cpp)/launch/natnet_ros.launch"/>
+    <arg name="robot_ip" default="192.168.3.100"/>
+    <arg name="load_gripper" default="false"/>
+    <arg name="use_rviz" default="true" />
+    <arg name="use_gui" default="false" />
+    
+    <!-- launch Franka control -->
+    <include file="$(find franka_control)/launch/franka_control.launch">
+        <arg name="robot_ip" value="$(arg robot_ip)"/>
+        <arg name="load_gripper" value="$(arg load_gripper)"/>
+    </include>
+
+    <!-- For DP3 deployment-->
+    <!-- <include file="$(find allegro_hand)/launch/allegro_hand.launch" /> -->
+
+    <!-- For Collection -->
+    <include file="$(find allegro_hand)/launch/allegro_with_manus.launch" />
+
+    <!-- launch realsense2_camera -->
+    <include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch"/>
+
+    <!-- load robot_description and robot_description_semantic -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find allegro_franka_model)/src/urdf/frankaAllegro.xml'"/>
+    <param name="robot_description_semantic" textfile="$(find frankaAllegro_moveit_config)/config/FrankaAllegro.srdf" />
+    
+    <!-- launch robot_state_publisher -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
+
+    <!-- launch controller_manager -->
+    <node name="controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen"/>
+
+    <!-- load controller configuration -->
+    <rosparam command="load" file="$(find frankaAllegro_moveit_config)/config/controllers.yaml"/>
+
+    <!-- launch controller -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args=" arm_controller "/>
+
+    <!-- launch MoveIt's move_group -->
+    <include file="$(find frankaAllegro_moveit_config)/launch/move_group.launch">
+        <arg name="pipeline" value="ompl" />
+        <arg name="allow_trajectory_execution" value="true"/>
+        <arg name="moveit_controller_manager" value="ros_control" />
+    </include>
+
+    <!-- launch Rviz (optional) -->
+    <include file="$(find frankaAllegro_moveit_config)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
+        <arg name="rviz_config" value="$(find frankaAllegro_moveit_config)/config/moveit.rviz"/>
+    </include>
+
+    <!-- launch scene_manager_node   -->
+    <node name="scene_manager_node" pkg="frankaAllegro_moveit_config" type="add_scene.py" output="screen" />
+
+    <!-- launch end_effector_pose_publisher -->
+    <node name="end_effector_pose_publisher" pkg="franka_dynamic_tracking" type="pose_publisher.py" output="screen"/>
+
+    <!-- launch combined_state_publisher -->
+    <node name="combined_state_publisher" pkg="franka_dynamic_tracking" type="combined_state_publisher.py" output="screen"/> 
+
+    <!-- launch allegro_map_jointstate -->
+    <node name="allegro_map_jointstate" pkg="allegro_hand" type="joint_states_mapper.py" output="screen" />
+</launch>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+    <name>manus_ros_driver</name>
+    <version>0.0.0</version>
+    <description>
+        Manus ROS Driver
+    </description>
+    <maintainer email="shuang.li@tum.com">Shuang Li</maintainer>
+    <license>TODO</license>
+    <author email="shuang.li@tum.com">Shuang Li</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend>
+
+    <build_depend>std_msgs</build_depend>
+    <run_depend>std_msgs</run_depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,4 @@
+<launch>
+<!-- start node to manage scene -->
+    <node name="scene_manager_node" pkg="franka_dynamic_tracking" type="add_scene.py" output="screen" />
+<launch>

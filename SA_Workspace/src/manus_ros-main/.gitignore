@@ -1,0 +1,8 @@
+.vscode
+build
+my_build
+build_ros
+manus_ros_driver/third_party/grpc/
+manus_ros_driver/third_party/fmt/
+docker/SDKMinimalClient_Linux
+COLCON_IGNORE

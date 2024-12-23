@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- 基础参数 -->
+    <arg name="robot_ip" default="192.168.3.100"/>
+    <arg name="load_gripper" default="false"/>
+    <arg name="use_rviz" default="true" />
+    <arg name="use_gui" default="false" />
+    
+    <!-- Allegro Hand 参数 -->
+    <arg name="HAND" default="right"/>
+    <arg name="CONTROLLER" default="effort"/>
+    <arg name="POLLING" default="true"/>
+    <arg name="AUTO_CAN" default="true"/>
+    <arg name="CAN_DEVICE" default="/dev/pcanusb1"/>
+    <arg name="KEYBOARD" default="true"/>
+    
+    <!-- 1. 启动Franka控制 -->
+    <include file="$(find franka_control)/launch/franka_control.launch">
+        <arg name="robot_ip" value="$(arg robot_ip)"/>
+        <arg name="load_gripper" value="$(arg load_gripper)"/>
+    </include>
+
+    <!-- 2. 加载完整的机器人描述 -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find allegro_franka_model)/src/urdf/frankaAllegro.xml'"/>
+    <!-- 3. 加载SRDF -->
+    <param name="robot_description_semantic" textfile="$(find frankaAllegro_moveit_config)/config/FrankaAllegro.srdf" />
+    
+    <!-- 加载控制器配置 -->
+    <rosparam command="load" file="$(find frankaAllegro_moveit_config)/config/ros_controllers.yaml"/>
+
+    <!-- 4. 启动Allegro Hand控制器 -->
+    <node name="allegroHand_$(arg HAND)"
+          pkg="allegro_hand_controllers"
+          type="allegro_node_$(arg CONTROLLER)"
+          output="screen"
+          args="$(arg POLLING)">
+        
+        <rosparam command="load" 
+                  file="$(find allegro_hand_parameters)/zero.yaml"/>
+        <rosparam command="load" 
+                  file="$(find allegro_hand_parameters)/gains_pd.yaml"/>
+        <rosparam command="load" 
+                  file="$(find allegro_hand_parameters)/initial_position.yaml"/>
+
+        <param name="/comm/CAN_CH" value="$(arg CAN_DEVICE)"
+               unless="$(arg AUTO_CAN)"/>
+        <param name="/comm/CAN_CH"
+               command="$(find allegro_hand_description)/scripts/detect_pcan.py"
+               if="$(arg AUTO_CAN)"/>
+
+        <param name="/hand_info/which_hand" value="$(arg HAND)"/>
+        
+        <!-- 重映射joint states -->
+        <remap from="joint_states" to="allegro/joint_states"/>
+    </node>
+
+    <!-- 5. 启动joint states合并器 -->
+    <node name="joint_state_combiner" pkg="your_package_name" type="joint_state_combiner.py"
+          output="screen" required="true">
+        <remap from="/franka_state_controller/joint_states" to="franka/joint_states"/>
+        <remap from="allegro/joint_states" to="allegro/joint_states"/>
+        <remap from="/joint_states" to="/joint_states_combined"/>
+    </node>
+
+    <!-- 6. 启动robot state publisher -->
+    <!-- 唯一名称的robot_state_publisher -->
+    <node name="robot_state_publisher_allegro" pkg="robot_state_publisher" 
+          type="robot_state_publisher" output="screen">
+        <remap from="joint_states" to="allegro/joint_states"/>
+    </node>
+    <node name="robot_state_publisher_franka" pkg="robot_state_publisher" 
+          type="robot_state_publisher" output="screen">
+        <remap from="joint_states" to="franka/joint_states"/>
+    </node>
+
+    <!-- 7. 启动Allegro键盘控制 -->
+    <node name="allegro_keyboard" pkg="allegro_hand_keyboard" 
+          type="allegro_hand_keyboard" output="screen"
+          if="$(arg KEYBOARD)">
+        <remap from="allegroHand/lib_cmd" to="allegroHand/lib_cmd"/>
+    </node>
+
+    <!-- 8. 启动MoveIt -->
+    <include file="$(find frankaAllegro_moveit_config)/launch/move_group.launch">
+        <arg name="load_robot_description" value="false"/>
+        <arg name="moveit_controller_manager" value="simple"/>
+        <arg name="pipeline" value="ompl"/>
+    </include>
+
+    <!-- 9. 启动Rviz（可选） -->
+    <include file="$(find frankaAllegro_moveit_config)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
+        <arg name="rviz_config" value="$(find frankaAllegro_moveit_config)/config/moveit.rviz"/>
+    </include>
+    
+</launch>

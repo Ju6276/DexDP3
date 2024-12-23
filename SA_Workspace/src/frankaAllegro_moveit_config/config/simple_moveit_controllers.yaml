@@ -1,0 +1,34 @@
+controller_list:
+  - name: arm_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - panda_joint1
+      - panda_joint2
+      - panda_joint3
+      - panda_joint4
+      - panda_joint5
+      - panda_joint6
+      - panda_joint7
+  - name: hand_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - allegro_joint_0
+      - allegro_joint_1
+      - allegro_joint_2
+      - allegro_joint_3
+      - allegro_joint_12
+      - allegro_joint_13
+      - allegro_joint_14
+      - allegro_joint_15
+      - allegro_joint_4
+      - allegro_joint_5
+      - allegro_joint_6
+      - allegro_joint_7
+      - allegro_joint_8
+      - allegro_joint_9
+      - allegro_joint_10
+      - allegro_joint_11

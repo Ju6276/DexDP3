@@ -1,0 +1,150 @@
+# Parameters for the dynamic pushing controller
+
+# The plane on which the end effector is supposed to move.
+# Add a little bit of padding for safety. Acceleration limits are
+# applied after applying the worspace constraints, so the end-effector might
+# overshoot a little bit past the worspace boundaries.
+
+# [-1.56992084185 -4.61997551123 1.73008680344 -0.299952809011 1.56991326809 -3.13995510737]
+# s_model_tool0
+# workspace_center:
+#   x: 0.942728560955
+#   y: 0.590706387152
+#   z: 0.929007826387
+
+# low start pose: -1.57 -4.367 1.21 0.0 1.57 -3.14
+# ur5_ee_link
+# workspace_center:
+#   x: 0.731
+#   y: 0.591
+#   z: 0.939
+
+#[-1.57445842425 -4.27977019945 1.64223384857 -0.512127224599 1.58757352829 3.1445119381]
+# higher start pose: -1.57 -4.367 1.21 0.0 1.57 -3.14
+# ur5_ee_link
+# workspace_center:
+#   x: 0.830
+#   y: 0.590
+#   z: 1.072
+
+# camera inverse direction position
+# workspace_center:
+#   x: 0.834
+#   y: 1.015
+#   z: 0.919
+# workspace_size:
+#   x: 0.6
+#   y: 0.6
+#   z: 0.8
+
+#joints = [-1.30764562288 -3.50876742998 -0.741884533559 1.15395367146 1.31503617764 -0.0948551336872] # upward
+#joints = [-1.30764562288 -3.50876742998 -0.741884533559 1.15395367146 1.31503617764 3.14] #downward
+# workspace_center: # upward
+#   x: 0.884
+#   y: 0.742
+#   z: 0.769
+
+# right shoulder
+# joints = [1.18668925762 1.50804817677 -1.33742219607 -3.34887534777 -1.11042005221 -0.0658515135394]
+# [1.4135041236877441, -4.4450451771365564, 5.218793869018555, -3.1632335821734827, -1.0164549986468714, -3.2026715914355677]
+#[0.7517361640930176, -4.320938769971029, 5.219320774078369, -5.767909948025839, 1.016122579574585, -0.060503784810201466]
+workspace_center: # upward
+  # x: 0.838
+  # y: 0.843
+  # z: 0.911
+  # x: 0.871
+  # y: 0.836
+  # z: 1.036
+  x: 0.804
+  y: 0.886
+  z: 0.706
+
+# workspace_center:
+#   x: 0.882
+#   y: 0.742
+#   z: 0.801
+workspace_size:
+  x: 0.6
+  y: 0.8
+  z: 0.8
+
+# RPY
+# s_model_tool0
+# -3.139 0.134 0.00
+# start_rotation:
+#   roll: -3.14
+#   pitch: 0.04826132211361792
+#   yaw: 0.00
+# ur5_ee_link
+
+# low start pose:
+# start_rotation:
+#   roll: -3.140
+#   pitch: 0.048
+#   yaw: 0.00
+# start_rotation:
+#   roll: -3.140
+#   pitch: 0.008
+#   yaw: 0.013
+# start_rotation:
+#   roll: 3.074
+#   pitch: 0.081
+#   yaw: -0.062
+# [-0.042, -0.022, 0.003, 0.999] RPY (radian) [-0.084, -0.043, 0.007]
+# start_rotation_q: # upward
+#   x: -0.043
+#   y: 0.017
+#   z: 0.002
+#   w: 0.999
+
+#right shoulder
+start_rotation_q: # upward
+  # x: 0.014
+  # y: -0.012
+  # z: -0.010
+  # w: 1.000
+  x: -0.010
+  y: -0.028
+  z: -0.055
+  w: 0.998
+
+  #
+  # x: -0.025
+  # y: -0.112
+  # z: 0.002
+  # w: 0.998
+
+# start_rotation_q: # downard
+#   x: 1.000
+#   y: 0.004
+#   z: 0.0022
+#   w: -0.011
+# start_rotation:
+#   roll: -3.139
+#   pitch: 0.134
+#   yaw: 0.00
+
+table_center:
+  x: 0.75
+  y: 0.74
+  z: 1.2
+table_size:
+  x: 0.4
+  y: 0.5
+
+# Maximum cartesian end-effector velocity
+max_position_velocity: 0.5
+max_rotation_velocity: 2.0
+
+# Maximum cartesian end-effector acceleration
+# The acceleration limit is also applied when stopping at the
+# workspace boundaries, so don't set the acceleration limit too low.
+# Otherwise, the end-effector might move too far past the workspace boundary.
+max_acceleration: 2.0
+
+# Maximum joint-space velocity, just for safety. You should mainly rely on
+# the cartesian velocity limit.
+max_joint_velocity: 3.0
+
+# Control frequency
+frequency: 30
