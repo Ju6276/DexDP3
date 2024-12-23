@@ -1,0 +1,12 @@
+<launch>
+  <!--
+      Visualization of the allegro hand using rviz. Can be launched separately
+      or by including it in another launch file.
+  -->
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find allegro_hand_description)/allegro_hand_config.rviz" >
+    <remap from="/tf" to="/allegroHand/tf"/>
+  </node>
+
+</launch>

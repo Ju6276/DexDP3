@@ -1,0 +1,12 @@
+<launch>
+    <!-- Launch Allegro Hand -->
+    <include file="$(find allegro_hand)/launch/allegro_hand.launch" />
+
+    <!-- Launch Manus Driver -->
+    <node name="manus_driver" pkg="manus_ros_driver" type="full_client" output="screen" />
+
+    <!-- Launch Manus to Allegro Mapping Node -->
+    <node name="manus_to_allegro" pkg="allegro_hand" type="ManusToAllegro.py" output="screen" />
+
+
+</launch>
