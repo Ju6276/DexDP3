@@ -105,7 +105,11 @@ On the execution computer, run the following script to control the robot:
 ```bash
 python SA_Workspace/src/control.py
 ```
-
+#### 3.3 Check the Network Status
+Here provide a script to check the communication between the training computer and the execution computer with ROS:
+```bash
+python SA_Workspace/src/test_ros_network.py
+```
 ---
 
 
