@@ -63,9 +63,8 @@ Run the script to merge episodes and convert the data into the format required f
 ```bash
 python merge_episodes.py
 ```
-#### 1.6 Estimate the Extrinsic Parameters
-This repository provides a script to estimate the extrinsic parameters of the ArUco markers using pyrealsense2. 
-Run the script to estimate the extrinsic parameters of the ArUco markers:
+#### 1.6 Estimate the Extrinsic Parameters (extra feature, not required for the main task) 
+This repository provides a script to estimate the extrinsic parameters of the ArUco markers using pyrealsense2. If need camera calibration, please run the script to estimate the extrinsic parameters of the ArUco markers:
 ```bash
 python aruco_extrinsic.py
 ```
