@@ -10,6 +10,7 @@ This repository is for the thesis **Dexterous Manipulation on Multi-Fingered Han
 - **Teleoperation System for Dataset Collection**:  
   - Wrist tracking using the OptiTrack V120:Trio.  
   - Finger motion capture with Manus Quantum Mocap Metagloves.  
+  - Data collection with using Realsense LiDAR L515 camera.
 
 - **Unified ROS Workspace**:  
   - Seamless integration of robotic arm and dexterous hand control.  
@@ -48,7 +49,7 @@ Two versions of the tracking system are available:
 #### 1.3 Process and Save Data
 Navigate to the `data_collection` folder and run the script to process and save the data:
 ```bash
-python process_data.py
+python real_data_collection.py
 ```
 
 #### 1.4 Generate Point Clouds
