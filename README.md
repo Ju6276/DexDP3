@@ -1,7 +1,8 @@
 # DexDP3
 This repository is for the thesis **Dexterous Manipulation on Multi-Fingered Hands Based on 3D Diffusion Policy**.
 
-[**3D Diffusion Policy (DP3)**](https://github.com/YanjieZe/3D-Diffusion-Policy/tree/master) is a novel generative framework for robotic behavior synthesis utilizing 3D point clouds as input. The framework is implemented on the Franka Panda robotic arm and the Allegro dexterous hand. 
+[**3D Diffusion Policy (DP3)**](https://github.com/YanjieZe/3D-Diffusion-Policy/tree/master) is a novel generative framework for robotic behavior synthesis utilizing 3D point clouds as input. The framework is implemented on the Franka Panda robotic arm and the Allegro dexterous hand. A teleoperation system was developed for dataset collection, combining the OptiTrack V120:Trio for wrist tracking and the Manus Quantum Mocap Metagloves for finger motion capture. Control of the robotic arm and dexterous hand, teleoperation workflows, and policy deployment were integrated into a unified ROS workspace to streamline deployment and tuning. Simulation environments were constructed using MoveIt to ensure safety during data collection and policy deployment.
+
 
 ## Video Demonstration
 📹 Watch the project in action: [YouTube Link](https://youtu.be/FM8L9Usz-KI?si=CQtNt1eZG-jtY8vq)
