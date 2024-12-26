@@ -1,7 +1,7 @@
 # DexDP3
 
 <div align="center">
-  <img src="https://your-image-hosting-url.com/image.png" width="800"/>
+  <img src="https://github.com/Ju6276/DexDP3/blob/main/assets/realscenarios.jpg" width="800"/>
 </div>
 
 This repository is for the thesis **Dexterous Manipulation on Multi-Fingered Hands Based on 3D Diffusion Policy**.
