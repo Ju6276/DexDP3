@@ -9,6 +9,7 @@ import pytorch3d.ops as torch3d_ops
 '''
 This script is used to generate point clouds from the raw data.
 ''' 
+from scipy.interpolate import griddata
 
 def farthest_point_sampling(points, num_points=1024, use_cuda=True):
     """Perform farthest point sampling on point cloud"""
@@ -40,6 +41,26 @@ def transform_point_cloud(pcd, extrinsic_matrix):
         transformed_pcd.colors = pcd.colors
     return transformed_pcd
 
+def fill_missing_values(depth_image):
+    """Fill missing values in depth image using nearest neighbor interpolation"""
+    h, w = depth_image.shape
+    y, x = np.mgrid[0:h, 0:w]
+    valid_mask = depth_image > 0
+    points = np.array((x[valid_mask], y[valid_mask])).T
+    values = depth_image[valid_mask]
+    filled_depth = griddata(points, values, (x, y), method='nearest')
+    return filled_depth
+
+def repair_depth_image(depth_image):
+    """Repair depth image using bilateral filtering for interpolation"""
+    # Fill missing values or noise (assuming areas with depth value 0 need repair)
+    mask = (depth_image == 0)
+    if np.any(mask):
+        # Use neighborhood interpolation smoothing
+        depth_image[mask] = np.median(depth_image[~mask])  # First use median to fill missing values
+    repaired_depth = cv2.bilateralFilter(depth_image.astype(np.float32), 5, 50, 50)
+    return repaired_depth
+
 def process_episode(episode_dir, camera_intrinsics, extrinsic_matrix):
     """Process data for a single episode"""
     img_dir = os.path.join(episode_dir, "img")
@@ -47,7 +68,6 @@ def process_episode(episode_dir, camera_intrinsics, extrinsic_matrix):
     point_cloud_dir = os.path.join(episode_dir, "point_cloud")
     os.makedirs(point_cloud_dir, exist_ok=True)
 
-    # Get all frame numbers
     frames = sorted([f[6:-4] for f in os.listdir(img_dir) if f.startswith('frame_') and f.endswith('.png')])
     
     for frame_idx in tqdm(frames, desc=f"Processing {os.path.basename(episode_dir)}"):
@@ -57,7 +77,9 @@ def process_episode(episode_dir, camera_intrinsics, extrinsic_matrix):
         # Read image and depth data
         color_image = cv2.imread(color_path)
         depth_image = np.load(depth_path)
-        
+        depth_image = fill_missing_values(depth_image)
+        depth_image = repair_depth_image(depth_image)
+
         # Convert to Open3D format
         o3d_color = o3d.geometry.Image(color_image)
         o3d_depth = o3d.geometry.Image(depth_image)
@@ -121,7 +143,7 @@ def process_all_data(data_root, camera_intrinsics, extrinsic_matrix):
             process_episode(episode_dir, camera_intrinsics, extrinsic_matrix)
 
 def main():
-    data_root = "/home/ju/Downloads/data_raw2"
+    data_root = "/home/ju/Downloads/data_raw"
     
     # Set camera intrinsics
     camera_intrinsics = o3d.camera.PinholeCameraIntrinsic(
